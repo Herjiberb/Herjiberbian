@@ -1,0 +1,5 @@
+UNITS.push({id:'u2',title:'Being and Feelings',lessons:[
+{id:'u2a',type:'lesson',title:'Pronouns',words:['gihb','gihlb','gihlih','gohlih','gihdb','gihohlih']},
+{id:'u2b',type:'tutorial',title:'Adjective sentences',slides:[{h:'Adjective, subject, concluder',b:'To say who is how, put the adjective first, then the subject, then the concluder <b>ihjer</b> (is / am / are) at the tail.',ex:[['zuhg gihb ihjer','I am lonesome'],['brjl gihlb ihjer','you are happy']]}],words:['ihjer'],sent:[['I am lonesome','zuhg gihb ihjer','be'],['you are happy','brjl gihlb ihjer','be'],['he is fast','gjrk gihlih ihjer','be'],['she is good','rjlr gohlih ihjer','be'],['we are old','hlohp gihdb ihjer','be']]},
+{id:'u2c',type:'lesson',title:'Feelings',words:['brjl','brjk','grjl','grjk','yrjl','yrjk'],sent:[['she is sad','brjk gohlih ihjer','be'],['we are angry','grjk gihdb ihjer','be'],['I am thankful','yrjl gihb ihjer','be'],['they are calm','grjl gihohlih ihjer','be'],['he is jealous','yrjk gihlih ihjer','be']]},
+{id:'u2r',type:'retake',title:'Retake: weak spots'},{id:'u2t',type:'test',title:'Unit test'}]});
