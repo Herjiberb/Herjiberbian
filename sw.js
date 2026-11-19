@@ -1,0 +1,4 @@
+const V='hjb-v1',F=['./','index.html','style.css','app.js','manifest.json','lessons/words.js','lessons/unit1.js','lessons/unit2.js','lessons/unit3.js','lessons/unit4.js','lessons/unit5.js','icons/icon-192.png','icons/icon-512.png','icons/icon.svg','icons/favicon.ico'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(F)));self.skipWaiting()});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!=V).map(x=>caches.delete(x)))).then(()=>clients.claim()))});
+self.addEventListener('fetch',e=>{if(e.request.method!='GET')return;e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>{const n=fetch(e.request).then(x=>{if(x.ok)caches.open(V).then(c=>c.put(e.request,x.clone()));return x.clone?x:x}).catch(()=>r||caches.match('index.html'));return r||n}))});
