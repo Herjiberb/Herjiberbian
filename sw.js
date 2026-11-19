@@ -1,7 +1,7 @@
 // No version string needed: files are served from cache instantly, then refreshed
 // from the network in the background. Changes show up on the next open, with no forced reload.
 const C='hjb-cache';
-const F=['./','index.html','style.css','app.js','manifest.json','data/target.json','lessons/words.js','lessons/unit1.js','lessons/unit2.js','lessons/unit3.js','lessons/unit4.js','lessons/unit5.js','icons/icon-192.png','icons/icon-512.png','icons/icon.svg','icons/favicon.ico'];
+const F=['./','index.html','style.css','app.js','manifest.json','target.json','rcx.js','lessons/words.js','lessons/unit1.js','lessons/unit2.js','lessons/unit3.js','lessons/unit4.js','lessons/unit5.js','icons/icon-192.png','icons/icon-512.png','icons/icon.svg','icons/favicon.ico'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok&&c.put(u,r)).catch(()=>{})))))});
 self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
 self.addEventListener('fetch',e=>{

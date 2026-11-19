@@ -40,7 +40,7 @@ function start(id){const[u,l]=L(id);if(!open(u,u.lessons.indexOf(l))||(U.indexOf
 function refine(){const ls=U.flatMap(u=>u.lessons.filter(l=>done(l.id)&&l.type!='retake'&&l.type!='test'));if(!ls.length)return `<h1>Refinery</h1><div class="card">The refinery throws random questions from everything you have completed. Finish a lesson first.</div>`;
  return `<h1>Refinery</h1><div class="card"><p>Ten random questions from every lesson you have finished. Earns XP and trains weak words.</p><button class="btn w" style="margin-top:12px" data-a="ref">Start refining</button></div>`}
 function mast(q,c){const t=S.t[q.tag]=S.t[q.tag]||[0,0];t[1]++;c&&t[0]++;q.w.filter(w=>W[w]).forEach(w=>S.w[w]=Math.max(0,Math.min(5,(S.w[w]||0)+(c?1:-1))))}
-function draw(){const r=R,m=$('#main');$('#rail').hidden=true;window.scrollTo(0,0);
+function draw(){const r=R,m=$('#main');window.scrollTo(0,0);
  if(r.si<r.sl.length){const s=r.sl[r.si];m.innerHTML=`<div class="row"><button data-a="quit">${ic('back')}</button><h3>${r.l.title}</h3></div><div class="card" style="margin-top:14px"><div class="tag">${r.l.type}</div><h1>${s.h}</h1>${s.b?`<p>${s.b}</p>`:''}${(s.ex||[]).map(e=>`<div class="ex"><b>${e[0]}</b><span>${e[1]}</span></div>`).join('')}${(s.w||[]).map(w=>`<div class="ex"><b>${w}</b><span>${W[w]}</span></div>`).join('')}</div><button class="btn w" data-a="next">${r.si==r.sl.length-1?'Start questions':'Next'}</button>`;return}
  if(r.i>=r.qs.length)return fin();const q=r.qs[r.i];pk=[];
  m.innerHTML=`<div class="row"><button data-a="quit">${ic('x')}</button><div style="flex:1">${bar(r.i/r.qs.length*100)}</div></div><div class="q ${q.hj?'':''}">${q.p}</div>`+
@@ -66,7 +66,7 @@ function settings(){const n=S.set.nav;return `<h1>Settings</h1><div class="card"
  <div class="card"><h2>App</h2><p class="m">Works offline, opens faster and keeps your streak one tap away.</p><button class="btn w" style="margin-top:10px" data-a="inst">${isApp()?'App installed':'Download app'}</button></div>
  <div class="card"><h2>Data</h2><button class="btn o w" data-a="reset">Reset all progress</button></div>`}
 const V={home,refine,mastery,profile,settings};
-function render(){R=null;const r=location.hash.slice(2)||'home';$('#main').innerHTML=(V[r]||home)();$('#rail').hidden=false;mode();fill();window.scrollTo(0,0)}
+function render(){R=null;const r=location.hash.slice(2)||'home';$('#main').innerHTML=(V[r]||home)();mode();window.scrollTo(0,0)}
 const A={menu(){desk()?(S.set.exp=!S.set.exp,save()):mx=!mx;mode()},
  claim(){if(S.last==day())return;S.streak=(S.last==day(-1)?S.streak:0)+1;const r=RW[(S.streak-1)%7];S.last=day();S.coins+=r;S.xp+=r;save();toast(`+${r} coins and XP`);render()},
  start:id=>start(id),ref(){const ls=U.flatMap(u=>u.lessons.filter(l=>done(l.id)&&l.type!='retake'&&l.type!='test'));R={u:null,l:{type:'refinery',title:'Refinery',ls},qs:gen(ls,10),sl:[],si:0,i:0,ok:0,miss:0};draw()},
@@ -81,31 +81,15 @@ function rs(){const q=R.qs[R.i];if($('#fb').innerHTML)return;$('#slot').innerHTM
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.v,t)});
 addEventListener('hashchange',render);addEventListener('resize',mode);addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});addEventListener('appinstalled',()=>{dip=null;render()});
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(g=>{document.addEventListener('visibilitychange',()=>document.visibilityState=='visible'&&g.update())}));
-var DECK=null,seen=new Set();
 const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-async function unpack(t){const b=Uint8Array.from(atob(t),c=>c.charCodeAt(0));return JSON.parse(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}
-async function deck(){if(DECK)return DECK;try{const d=await(await fetch('data/target.json')).json();const a=Object.values(d).find(Array.isArray)||[];DECK=(await Promise.all(a.map(x=>unpack(x).catch(()=>null)))).filter(Boolean)}catch(e){DECK=[]}return DECK}
-const hx=c=>{c=c.replace('#','');if(c.length==3)c=[...c].map(x=>x+x).join('');return[0,2,4].map(i=>parseInt(c.substr(i,2),16))};
-const lm=c=>{const[r,g,b]=hx(c);return(.299*r+.587*g+.114*b)/255};
-function look(x){const g=x.g||{},d=x.dim||.35;let bg,light;
- if(x.bg){bg=`linear-gradient(rgba(0,0,0,${d}),rgba(0,0,0,${d})),url(${x.bg}) center/cover`;light=true}
- else{bg=g.t=='radial'?`radial-gradient(circle at ${g.p||'center'},${g.c1},${g.c2})`:`linear-gradient(${g.a||0}deg,${g.c1},${g.c2})`;light=(lm(g.c1)+lm(g.c2))/2<.5}
- if(x.tc=='dark')light=false;else if(x.tc=='light')light=true;return{bg,light}}
-function card(x,f){const[w,h]=f.split('x').map(Number),{bg,light}=look(x),r=x.r||0,fg=light?'#fff':'#111',inv=light?'#111':'#fff';
- const logo=x.logo?`<img class="fx-l" src="${x.logo}" alt="" style="border-radius:${x.shape=='circle'?'50%':r+'px'}">`:'';
- return `<a class="fx" data-f="${f}" href="${esc(x.link)}" target="_blank" rel="noopener nofollow" style="max-width:${w}px;aspect-ratio:${w}/${h};background:${bg};color:${fg};border-radius:${Math.min(r,14)}px"><span class="fx-t">Sponsored</span>${logo}<span class="fx-b"><b>${esc(x.title)}</b>${h>=90?`<span>${esc(x.desc)}</span>`:''}</span><span class="fx-c" style="background:${fg};color:${inv}">${esc(x.cta||'Open')}</span></a>`}
-const slot=(d,m)=>`<div class="fx-slot" data-d="${d}" data-m="${m}"></div>`;
-async function fill(){const els=[...document.querySelectorAll('.fx-slot')];if(!els.length)return;const D=await deck(),dv=desk()?'desktop':'mobile';seen=new Set();
- for(const el of els){if(el.id=='rail'&&innerWidth<1300)continue;const f=el.dataset[dv=='desktop'?'d':'m'],c=D.filter(x=>(!x.plat||x.plat.includes(dv))&&(!x.fmts||x.fmts.includes(f))),p=c.filter(x=>!seen.has(x.id)),x=sh(p.length?p:c)[0];
-  if(!x){el.id!='rail'&&el.remove();continue}seen.add(x.id);el.innerHTML=card(x,f)}}
 function instCard(f){if(isApp()||(!f&&Date.now()-(S.set.pd||0)<6048e5))return'';
  return `<div class="card fxi"><div class="row"><span class="ico2">${ic('dl','l')}</span><div><h3>Get the Herjiberbian app</h3><p class="m">Works offline, opens faster and keeps your streak one tap away.</p></div></div><div class="row" style="margin-top:12px"><button class="btn" data-a="inst">Download app</button>${f?'':'<button class="btn o" data-a="pd">Not now</button>'}</div></div>`}
 function install(){if(dip){dip.prompt();dip.userChoice&&dip.userChoice.then(()=>{dip=null;render()});return}
  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent),t=ios?'Tap the Share button, then choose Add to Home Screen.':'Open your browser menu and choose Install app or Add to Home screen.';
  const m=document.createElement('div');m.className='mod';m.innerHTML=`<div class="card"><h2>Get the app</h2><p>${t}</p><button class="btn w" style="margin-top:12px" data-a="okm">Got it</button></div>`;document.body.appendChild(m)}
 function home(){const h=home0(),k='<div class="card"><div class="row"><div><div class="tag">Unit ',p=h.split(k);
- return p[0]+instCard()+slot('728x90','320x100')+p.slice(1).map((u,i)=>k+u+(i==1?slot('300x250','300x250'):'')).join('')}
-function mastery(){return mastery0().replace('</h1>','</h1>'+slot('468x60','320x50'))}
+ return p[0]+instCard()+p.slice(1).map((u,i)=>k+u).join('')}
+function mastery(){return mastery0().replace('</h1>','</h1>')}
 function profile(){return profile0().replace('</h1>','</h1>'+instCard(1))}
 
 render();
