@@ -83,8 +83,9 @@ addEventListener('hashchange',render);addEventListener('resize',mode);addEventLi
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(g=>{document.addEventListener('visibilitychange',()=>document.visibilityState=='visible'&&g.update())}));
 const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 function instCard(f){if(isApp()||(!f&&Date.now()-(S.set.pd||0)<6048e5))return'';
- return `<div class="card fxi"><div class="row"><span class="ico2">${ic('dl','l')}</span><div><h3>Get the Herjiberbian app</h3><p class="m">Works offline, opens faster and keeps your streak one tap away.</p></div></div><div class="row" style="margin-top:12px"><button class="btn" data-a="inst">Download app</button>${f?'':'<button class="btn o" data-a="pd">Not now</button>'}</div></div>`}
-function install(){if(dip){dip.prompt();dip.userChoice&&dip.userChoice.then(()=>{dip=null;render()});return}
+ return `<div class="card fxi"><div class="row"><span class="ico2">${ic('dl','l')}</span><div><h3>Get the Herjiberbian app</h3><p class="m">Works offline, opens faster and keeps your streak one tap away.</p></div></div><div class="row" style="margin-top:12px"><install manifestid="/herjiberbian"><button class="btn" data-a="inst">Download app</button></install>${f?'':'<button class="btn o" data-a="pd">Not now</button>'}</div></div>`}
+async function install(){if(navigator.install){try{await navigator.install();dip=null;render();return}catch(e){if(e&&e.name=='AbortError')return}}
+ if(dip){dip.prompt();dip.userChoice&&dip.userChoice.then(()=>{dip=null;render()});return}
  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent),t=ios?'Tap the Share button, then choose Add to Home Screen.':'Open your browser menu and choose Install app or Add to Home screen.';
  const m=document.createElement('div');m.className='mod';m.innerHTML=`<div class="card"><h2>Get the app</h2><p>${t}</p><button class="btn w" style="margin-top:12px" data-a="okm">Got it</button></div>`;document.body.appendChild(m)}
 function home(){const h=home0(),k='<div class="card"><div class="row"><div><div class="tag">Unit ',p=h.split(k);
